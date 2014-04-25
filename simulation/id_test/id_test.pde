@@ -29,6 +29,7 @@ void draw() {
   text("Press 'A' to add a new module", 20, 40);
   text("Press 'R' on a module to rotate it", 20, 60);
 
+  text("Press 'D' for debugging", 20, 100);
 
   arduino.display();
 
@@ -70,11 +71,12 @@ void keyPressed() {
         m.rotateModule();
       }
     }
-    
+
     else if (key == 'd') {
       for (Module m : modules) {
         m.outputGeometry();
       }
+      println("////////////////////////////////////////");
     }
   }
 }

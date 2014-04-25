@@ -81,7 +81,7 @@ class Module {
         dragging = true;
       }
     } 
-    //start dragging
+    //stop dragging
     else if (dragging == true) {
       dragging = false;
       magnet();
@@ -138,6 +138,7 @@ class Module {
   }
 
   //=========== magnet() ===========
+  //this function is called when you stop dragging a module by pressing mouse
   void magnet() {
     float magnetRegionWidth = 20.0;
 
@@ -145,17 +146,19 @@ class Module {
     for (Module m : modules) {
       m.resetConnectedCheck();
 
-
+      //all modules except dragged one should hold neibor's id info
       if (m.id != id) {
         int ignoreMe = -1;
         for (int i = 0; i < polyN; i++) {
           if (neibor_ids[i] == m.id) {
+            //the side facing to dragged module
             ignoreMe = i + polyN/2;
             if (ignoreMe >= polyN) {
               ignoreMe -= polyN;
             }
           }
         }
+        //rewrite all id data on each face without the face that's facing to the dragged module
         m.updateConnectedCheck(ignoreMe);
       }
     }
@@ -320,7 +323,7 @@ class Module {
     }
 
     for (Module m : modules) {    
-      print("my id: " + m.id + ", ");         ///////////// for debugging
+      //print("my id: " + m.id + ", ");         ///////////// for debugging
       for (int i = 0; i < polyN; i++) {
         if (m.connectedCheck[i] > 0) {
           m.neibor_ids[i] = m.connectedCheck[i];
@@ -328,11 +331,11 @@ class Module {
         else {
           m.neibor_ids[i] = 0;
         }
-        print(m.neibor_ids[i] + " ");       ///////////// for debugging
+        //print(m.neibor_ids[i] + " ");       ///////////// for debugging
       }
-      println();      ///////////// for debugging
+      //println();      ///////////// for debugging
     }
-    println();     ///////////// for debugging
+    //println();     ///////////// for debugging
 
     for (Module m : modules) {
       m.updateMyNeighbors();
@@ -359,6 +362,9 @@ class Module {
 
   //=========== updateMyNeighborsNeighbors() ===========
   void updateMyNeighborsNeighbors() {
+    ArrayList<Integer> whoExistNow = new ArrayList<Integer>();
+    ArrayList<Integer> whoDontExistNow = new ArrayList<Integer>();
+    whoExistNow.add(id);
 
     //get geometry data from each direction
     for (int i = 0; i < polyN; i++) {
@@ -367,12 +373,36 @@ class Module {
           //put all of its geometry data into this module's geometry data
           for (Map.Entry myGeo : m.ourGeometry.entrySet()) {
             int myGeoKey = Integer.parseInt(myGeo.getKey().toString());
+            whoExistNow.add(myGeoKey);
             String myGeoValue = (String) myGeo.getValue();
             ourGeometry.put(myGeoKey, myGeoValue);
           }
         }
       }
     }
+    
+    //find the modules that don't exist now
+    for (Map.Entry myGeo : ourGeometry.entrySet()) {
+      int myGeoKey = Integer.parseInt(myGeo.getKey().toString());
+      int count = 0;
+      for (int w : whoExistNow){
+        if (myGeoKey == w){
+          count += 1;
+          println(id + " allow: " + w);
+        }
+      }
+      if (count == 0){
+        whoDontExistNow.add(myGeoKey);
+        println(id + " delete: " + myGeoKey);
+      }
+    }
+
+    //remove the modules that don't exist now    
+    for (int w : whoDontExistNow) {
+      ourGeometry.remove(w);
+    }    
+    
+    
   }
   
   //=========== output log ===========
@@ -381,6 +411,7 @@ class Module {
     for (Map.Entry me : ourGeometry.entrySet()) {
       println(me.getKey(), me.getValue());
     }
+    println();
     println();
   }
 }
