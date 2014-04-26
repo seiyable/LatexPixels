@@ -15,7 +15,6 @@ class Module {
   int id; //this ID data
   int[] neibor_ids;  //neiborhood's ID data
 
-  String myNeighbors = ""; //not neccesary
   HashMap<Integer, String> ourGeometry;
 
   //=========== constructor ===========
@@ -36,7 +35,7 @@ class Module {
     }
     body.endShape(CLOSE);
     body.disableStyle();
-    
+
     updateMyNeighbors();
   }
 
@@ -353,11 +352,11 @@ class Module {
       tmp_myNeighbors += letter + str(neibor_ids[i]) + ',';
       letter += 1;
     }
+
+    tmp_myNeighbors += "age0"; //add age
     //println(id, tmp_myNeighbors);
 
-    myNeighbors = tmp_myNeighbors; //not neccesary
-
-    ourGeometry.put(id, myNeighbors);
+    ourGeometry.put(id, tmp_myNeighbors);
   }
 
   //=========== updateMyNeighborsNeighbors() ===========
@@ -370,41 +369,109 @@ class Module {
     for (int i = 0; i < polyN; i++) {
       for (Module m : modules) {
         if (m.id == neibor_ids[i]) {
-          //put all of its geometry data into this module's geometry data
-          for (Map.Entry myGeo : m.ourGeometry.entrySet()) {
-            int myGeoKey = Integer.parseInt(myGeo.getKey().toString());
-            whoExistNow.add(myGeoKey);
-            String myGeoValue = (String) myGeo.getValue();
-            ourGeometry.put(myGeoKey, myGeoValue);
-          }
+
+          //put all of its geometry data into this module's geometry data ---------------------
+          for (Map.Entry other_Geo : m.ourGeometry.entrySet()) {
+            //*********** get key of the entry ***********
+            int other_GeoKey = Integer.parseInt(other_Geo.getKey().toString());
+            //whoExistNow.add(other_GeoKey); //add it into whoExistNow array
+
+            //*********** get valule of the entry  ***********
+            String other_GeoValue = (String) other_Geo.getValue();
+            String[] other_neighbors_list = split(other_GeoValue, ',');
+            //retrieve age from the value
+            int other_Age = parseInt(other_neighbors_list[other_neighbors_list.length - 1].substring(3));
+
+
+            //*********** retrieve ids from the value and add them into whoExistNow array ***********
+            for (int j = 0; j < other_neighbors_list.length - 1; j++) {
+              whoExistNow.add(parseInt(other_neighbors_list[j].substring(1)));
+            }
+
+
+
+            //*********** do I hold the module who made this entry? ***********
+            if (ourGeometry.containsKey(other_GeoKey)) {
+              //if there is already an entry whose key is same
+              String my_GeoValue = (String) ourGeometry.get(other_GeoKey);
+              String[] my_neighbors_list = split(my_GeoValue, ',');
+              int my_Age = parseInt(my_neighbors_list[my_neighbors_list.length - 1].substring(3));
+
+              if (my_Age < other_Age) { 
+                //if the data is older than the one I hold, do nothing
+                //println("myID: " + id + "  data from " + m.id + " is old!!");
+              } 
+              else {
+                //if the data is younger than the one I hold, rewrite it
+                //with incrementing its age
+                other_Age++;
+
+                String new_other_GeoValue = "";
+                char letter = 'a';
+                for (int j = 0; j < other_neighbors_list.length - 1; j++) {
+                  new_other_GeoValue += letter + other_neighbors_list[j].substring(1) + ',';
+                  letter += 1;
+                }
+
+                new_other_GeoValue += "age" + str(other_Age); //add age
+                ourGeometry.put(other_GeoKey, new_other_GeoValue);
+              }
+            } 
+            else {
+
+              //if the data is new, add it
+              //with incrementing its age              
+              other_Age++;
+
+              String new_other_GeoValue = "";
+              char letter = 'a';
+              for (int j = 0; j < other_neighbors_list.length - 1; j++) {
+                new_other_GeoValue += letter + other_neighbors_list[j].substring(1) + ',';
+                letter += 1;
+              }
+
+              new_other_GeoValue += "age" + str(other_Age); //add age
+              ourGeometry.put(other_GeoKey, new_other_GeoValue);
+            }
+          }          
+          //------------------------------------------------------------------------------------
         }
-      }
-    }
-    
-    //find the modules that don't exist now
-    for (Map.Entry myGeo : ourGeometry.entrySet()) {
-      int myGeoKey = Integer.parseInt(myGeo.getKey().toString());
-      int count = 0;
-      for (int w : whoExistNow){
-        if (myGeoKey == w){
-          count += 1;
-          println(id + " allow: " + w);
-        }
-      }
-      if (count == 0){
-        whoDontExistNow.add(myGeoKey);
-        println(id + " delete: " + myGeoKey);
       }
     }
 
-    //remove the modules that don't exist now    
-    for (int w : whoDontExistNow) {
+    //find the modules that don't exist in the whole tree of modules right now
+    for (Map.Entry myGeo : ourGeometry.entrySet()) {
+      int myGeoKey = Integer.parseInt(myGeo.getKey().toString());
+      int count = 0;
+      for (int w : whoExistNow) {
+        if (myGeoKey == w) {
+          count += 1;
+          //println(id + " allow: " + w);
+        }
+      }
+      if (count == 0) {
+        whoDontExistNow.add(myGeoKey);
+        //println(id + " delete: " + myGeoKey);
+      }
+    }
+
+
+    //save those who are my neighbors
+    String my_GeoValue = (String) ourGeometry.get(id);
+    String[] my_neighbors_list = split(my_GeoValue, ',');
+    for (int j = 0; j < my_neighbors_list.length - 1; j++) {
+      int save = parseInt(my_neighbors_list[j].substring(1));       
+      if (whoDontExistNow.contains(save)) {
+        int savedIndex = whoDontExistNow.indexOf(save);
+        whoDontExistNow.remove(savedIndex);
+      }
+    }
+    //remove the modules that don't exist in the whole tree of modules right now
+    for (int w : whoDontExistNow) {  
       ourGeometry.remove(w);
-    }    
-    
-    
+    }
   }
-  
+
   //=========== output log ===========
   void outputGeometry() {
     println(id + "---------------------------");

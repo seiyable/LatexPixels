@@ -40,6 +40,16 @@ void draw() {
   for (Module m : modules) {
     m.dragging();
   }
+
+  for (Module m : modules) {
+    m.updateMyNeighbors();
+  }
+
+  for (Module m : modules) {
+    m.updateMyNeighborsNeighbors();
+  }
+
+
 }
 
 //=========== keyPressed() ===========
