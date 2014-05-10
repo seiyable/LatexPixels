@@ -3,16 +3,30 @@ var modules = [];
 var initialModulesN = 37;
 var eManager;
 
-
 //=========== setup() ===========
 function setup() {
   var canvas = createCanvas(window.innerWidth, window.innerHeight);
+  canvas.mousePressed(express);
+  //canvas.touchStarted(express);
+  var options = {
+    preventDefault: true
+  };
+
+  var polyN = 6;
+  // if user is accessing this page from computer
+  var r = 40;
+  var moduleWidth = 2*r*sin((PI - (2*PI/polyN))/2);
+  var moduleSide = 2*r*sin(PI/polyN);
+
+  // if user is accessing this page from mobile devices
+  if(navigator.userAgent.search(/iPhone/) != -1 || navigator.userAgent.search(/iPad/) != -1 || navigator.userAgent.search(/iPod/) != -1 || navigator.userAgent.search(/Android/) != -1){
+    var gap = width*0.05;
+    moduleWidth = (width-gap*2) / 7;
+    r = moduleWidth / (2*sin((PI - (2*PI/polyN))/2));
+    moduleSide = 2*r*sin(PI/polyN);
+  }
 
   for (var i = 1; i <= initialModulesN; i++) {
-    var polyN = 6;
-    var r = 40;
-    var moduleWidth = 2*r*sin((PI - (2*PI/polyN))/2);
-    var moduleSide = 2*r*sin(PI/polyN);
     var lx = 0;
     var ly = 0;
     
@@ -52,11 +66,16 @@ function setup() {
 //=========== draw() ===========
 function draw() {
   background(230);
-  textSize(30);
+  /*
+  textSize(20);
   fill(0);
-  text("Press A on a module to let it START blinking", 20, 40);
-  text("Press D on a module to let it STOP blinking", 20, 80);
+  text("Press P: Pulse it  /  Press O: Stop Pulsing", 20, height-90);
+  text("Press R: Rise it  /  Press T: Stop Rising", 20, height-60);
+  text("Press F: Fail it  /  Press G: Stop Failing", 20, height-30);
+  */
   textSize(12);
+
+
 
   eManager.loop();
 
@@ -66,28 +85,29 @@ function draw() {
 
 }
 
-//=========== keyPressed() ===========
-function keyPressed() {
-  console.log(key + " pressed");
+//=========== touchStarted() / mousePressed() ===========
+function express() {
+  var x = mouseX || touchX;
+  var y = mouseY || touchY;
 
   var id = 0;
     //get module's id at the current mouse position
     for(var i = 0; i < modules.length; i++) {
       var incircleRadius = modules[i].radius*0.7;
-      if ((mouseX > modules[i].location.x - incircleRadius && mouseX < modules[i].location.x + incircleRadius) &&
-        (mouseY > modules[i].location.y - incircleRadius && mouseY < modules[i].location.y + incircleRadius)) {
+      if ((x > modules[i].location.x - incircleRadius && x < modules[i].location.x + incircleRadius) &&
+        (y > modules[i].location.y - incircleRadius && y < modules[i].location.y + incircleRadius)) {
         id = modules[i].id;
       }
     }
-    
-  eManager.keyHandler(key, id);
+  console.log(id);
+  eManager.expressHandler(id);
+  //eManager.keyHandler(key, id);
 
-  //-------- debug --------
-  if (key == 'Z') {
-    for(var i = 0; i < modules.length; i++) {
-      modules[i].showState();
-    }
-  }
 }
 
 //=========== mousePressed() ===========
+
+//=========== radioButtonPressed() ===========
+$("input[type='radio']").bind( "change", function(event, ui) {
+  eManager.changeDrawType(event.target.value);
+});

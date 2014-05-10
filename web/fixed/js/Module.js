@@ -13,7 +13,7 @@ function Module(_polyN, _r, _lx, _ly, _id) {
   this.id = _id; //this ID data
   this.neighbor_ids = [0, 0, 0, 0, 0, 0];  //neiborhood's ID data
 
-  this.servoAngle = 0;
+  this.servoAngle = this.servoMax/2;
   this.h = 0, this.s = 255, this.v = 255;  //color
 }
 
