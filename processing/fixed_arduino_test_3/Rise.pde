@@ -1,34 +1,33 @@
-class Blink {
+class Rise {
   //=========== in-class variables ===========
-  ArrayList<Integer> blinkIDs;
-  float servoMax = 180;
+  ArrayList<Integer> riseIDs;
+  float servoMax = 179;
   ArrayList<Float> clocks;
   ArrayList<Float> clockSpeeds;
   ArrayList<Integer> lifespans;
 
   //=========== constructor ===========
-  Blink() {
-    blinkIDs = new ArrayList<Integer>();
+  Rise() {
+    riseIDs = new ArrayList<Integer>();
     clocks = new ArrayList<Float>();
     clockSpeeds = new ArrayList<Float>();
     lifespans = new ArrayList<Integer>();
   }
 
-  //=========== blinkIt() ===========  
-  void blinkIt() {
+  //=========== riseIt() ===========  
+  void riseIt() {
 
     for (Module m : modules) {
-      if (blinkIDs.contains(m.id)) {
-        int blinkIndex = blinkIDs.indexOf(m.id);
-        int counter = (int) floor(clocks.get(blinkIndex) / 360);
+      if (riseIDs.contains(m.id)) {
+        int riseIndex = riseIDs.indexOf(m.id);
+        int counter = (int) floor(clocks.get(riseIndex) / 360);
         
-        if(counter >= lifespans.get(blinkIndex)){
+        if(counter >= lifespans.get(riseIndex)){
           //println(counter);
-          //println(lifespans.get(blinkIndex));
+          //println(lifespans.get(riseIndex));
           removeList(m.id);
         } else {
-          float theta = radians(clocks.get(blinkIndex) % 360);
-          m.servoAngle = (1 +sin(theta - PI))*servoMax/2; // 0 ~ servoMax
+          m.servoAngle = 0;
         }
       }
     }
@@ -36,30 +35,30 @@ class Blink {
 
   //=========== addList() ===========
   void addList(int _id) {
-    blinkIDs.add(_id);
+    riseIDs.add(_id);
     clocks.add(0.0);
     clockSpeeds.add(5.0);
     lifespans.add(3);
 
-    for (Integer bids : blinkIDs) {
-      print(bids + " ");
+    for (Integer rids : riseIDs) {
+      //print(rids + " ");
     }
-    println();
+    //println();
   }
 
   //=========== removeList() ===========
   void removeList(int _id) { 
-    if (blinkIDs.size() > 0) {
-      if (blinkIDs.contains(_id)) {
-        int removeIndex = blinkIDs.indexOf(_id);
-        blinkIDs.remove(removeIndex);
+    if (riseIDs.size() > 0) {
+      if (riseIDs.contains(_id)) {
+        int removeIndex = riseIDs.indexOf(_id);
+        riseIDs.remove(removeIndex);
         clocks.remove(removeIndex);
         clockSpeeds.remove(removeIndex);
         lifespans.remove(removeIndex);
 
         for (Module m : modules) {
           if (m.id == _id) {
-            m.servoAngle = 0;
+            m.servoAngle = 120;
           }
         }
       }

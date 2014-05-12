@@ -1,24 +1,25 @@
-class Blink {
+/*
+class Chain {
   //=========== in-class variables ===========
-  ArrayList<Integer> blinkIDs;
+  ArrayList<Integer> chainIDs;
   float servoMax = 180;
   ArrayList<Float> clocks;
   ArrayList<Float> clockSpeeds;
   ArrayList<Integer> lifespans;
 
   //=========== constructor ===========
-  Blink() {
-    blinkIDs = new ArrayList<Integer>();
+  Chain() {
+    chainIDs = new ArrayList<Integer>();
     clocks = new ArrayList<Float>();
     clockSpeeds = new ArrayList<Float>();
     lifespans = new ArrayList<Integer>();
   }
 
-  //=========== blinkIt() ===========  
-  void blinkIt() {
+  //=========== chainIt() ===========  
+  void chainIt() {
 
     for (Module m : modules) {
-      if (blinkIDs.contains(m.id)) {
+      if (chainIDs.contains(m.id)) {
         int blinkIndex = blinkIDs.indexOf(m.id);
         int counter = (int) floor(clocks.get(blinkIndex) / 360);
         
@@ -76,4 +77,4 @@ class Blink {
     }
   }
 }
-
+*/
