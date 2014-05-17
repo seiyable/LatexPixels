@@ -1,26 +1,27 @@
-function Rise() {
+function RippleChild() {
   //=========== in-class variables ===========
   this.servoMax = 180;
-  this.riseIDs = [];
+  this.rippleIDs = [];
   this.clocks = [];
   this.clockSpeeds = [];
   this.lifespans =[];
 }
 
-Rise.prototype = {
+RippleChild.prototype = {
 
-  //=========== riseIt() ===========  
-  riseIt : function() {
+  //=========== rippleIt() ===========  
+  rippleIt : function() {
 
     for (var i = 0; i < modules.length; i++) {
-      if (this.riseIDs.indexOf(modules[i].id) >= 0) {
-        var riseIndex = this.riseIDs.indexOf(modules[i].id);
-        var counter = this.clocks[riseIndex];
+      if (this.rippleIDs.indexOf(modules[i].id) >= 0) {
+        var rippleIndex = this.rippleIDs.indexOf(modules[i].id);
+        var counter = this.clocks[rippleIndex];
 
-        if(counter >= this.lifespans[riseIndex]){
+        if(counter >= this.lifespans[rippleIndex]){
           this.removeList(modules[i].id);
         } else {
-          modules[i].servoAngle = this.servoMax; // 0 ~ servoMax
+          var theta = radians(this.clocks[rippleIndex] % 360);
+          modules[i].servoAngle = (1 +sin(theta - PI))*this.servoMax/2; // 0 ~ servoMax
         }
       }
     }
@@ -28,23 +29,24 @@ Rise.prototype = {
 
   //=========== addList() ===========
   addList : function(_id) {
-    this.riseIDs.push(_id);
+    this.rippleIDs.push(_id);
     this.clocks.push(0.0);
     this.clockSpeeds.push(0.1);
     this.lifespans.push(18);
+
     for (var i = 0; i < modules.length; i++) {
       if (modules[i].id == _id) {
-         modules[i].riseOn = true;
+         modules[i].rippleOn = true;
       }
     }
   },
 
   //=========== removeList() ===========
-  removeList : function(_id) { 
-    if (this.riseIDs.length > 0) {
-      if (this.riseIDs.indexOf(_id) >= 0) {
-        var removeIndex = this.riseIDs.indexOf(_id);
-        this.riseIDs.splice(removeIndex, 1);
+  removeList : function(_id) {
+    if (this.rippleIDs.length > 0) {
+      if (this.rippleIDs.indexOf(_id) >= 0) {
+        var removeIndex = this.rippleIDs.indexOf(_id);
+        this.rippleIDs.splice(removeIndex, 1);
         this.clocks.splice(removeIndex, 1);
         this.clockSpeeds.splice(removeIndex, 1);
         this.lifespans.splice(removeIndex, 1);
@@ -52,7 +54,7 @@ Rise.prototype = {
         for (var i = 0; i < modules.length; i++) {
           if (modules[i].id == _id) {
             modules[i].servoAngle = this.servoMax/2;
-            modules[i].riseOn = false;
+            modules[i].rippleOn = false;
           }
         }
       }

@@ -265,7 +265,7 @@ void retractionCheck() {
 }
 
 void debug(){  
-  if (millis() % 1000 == 0) {
+  if (millis() % 100 == 0) {
     Serial.print("piezo value1 : ");
     Serial.println(piezoValue1);
     Serial.print("piezo value2 : ");

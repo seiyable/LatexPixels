@@ -14,7 +14,7 @@ class Module {
   int[] neighbor_ids = {0, 0, 0, 0, 0, 0}; //neiborhoods' ID
 
   float servoMax = 179;
-  float servoAngle = 120;
+  float servoAngle = 90;
   
   int inputValue = 0;
 

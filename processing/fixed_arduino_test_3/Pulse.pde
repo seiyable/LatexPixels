@@ -59,7 +59,7 @@ class Pulse {
 
         for (Module m : modules) {
           if (m.id == _id) {
-            m.servoAngle = 120;
+            m.servoAngle = 90;
           }
         }
       }

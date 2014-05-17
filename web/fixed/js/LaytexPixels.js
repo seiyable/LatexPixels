@@ -66,16 +66,7 @@ function setup() {
 //=========== draw() ===========
 function draw() {
   background(230);
-  /*
-  textSize(20);
-  fill(0);
-  text("Press P: Pulse it  /  Press O: Stop Pulsing", 20, height-90);
-  text("Press R: Rise it  /  Press T: Stop Rising", 20, height-60);
-  text("Press F: Fail it  /  Press G: Stop Failing", 20, height-30);
-  */
   textSize(12);
-
-
 
   eManager.loop();
 

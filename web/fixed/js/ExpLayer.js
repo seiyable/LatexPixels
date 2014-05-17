@@ -1,11 +1,11 @@
 function ExpLayer() {
   //=========== in-class variables ===========
   this.drawRise = true;
-  this.drawFail = false;
+  this.drawFall = false;
   this.drawPulse = false;
 
   this.rs = new Rise();
-  this.fl = new Fail();
+  this.fl = new Fall();
   this.pl = new Pulse();
 }
 
@@ -14,7 +14,7 @@ ExpLayer.prototype = {
   loop : function() {
       this.pl.pulseIt();
       this.rs.riseIt();
-      this.fl.failIt();
+      this.fl.fallIt();
   },
 
   //=========== expressHandler() ===========
@@ -44,7 +44,7 @@ ExpLayer.prototype = {
     */
 
     //-------- start fail --------
-    if (this.drawFail) {
+    if (this.drawFall) {
       this.fl.addList(_id);
     }
 
@@ -95,17 +95,17 @@ ExpLayer.prototype = {
   changeDrawType : function(_value) {
     if (_value == "Rise"){
       this.drawRise = true;
-      this.drawFail = false;
+      this.drawFall = false;
       this.drawPulse = false;
       console.log("Rise On");
-    } else if (_value == "Fail") {
+    } else if (_value == "Fall") {
       this.drawRise = false;
-      this.drawFail = true;
+      this.drawFall = true;
       this.drawPulse = false;
       console.log("Fail On");
     } else if (_value == "Pulse") {
       this.drawRise = false;
-      this.drawFail = false;
+      this.drawFall = false;
       this.drawPulse = true;
       console.log("Pulse On");
     }
