@@ -1,10 +1,11 @@
-function RippleChild() {
+function RippleChild(_baseID, _lastStepIDs, _pastStepIDs) {
   //=========== in-class variables ===========
   this.servoMax = 180;
   this.rippleIDs = [];
   this.clocks = [];
   this.clockSpeeds = [];
-  this.lifespans =[];
+
+  this.setRippleIDs(_baseID, _lastStepIDs, _pastStepIDs);
 }
 
 RippleChild.prototype = {
@@ -14,14 +15,48 @@ RippleChild.prototype = {
 
     for (var i = 0; i < modules.length; i++) {
       if (this.rippleIDs.indexOf(modules[i].id) >= 0) {
-        var rippleIndex = this.rippleIDs.indexOf(modules[i].id);
-        var counter = this.clocks[rippleIndex];
+          modules[i].servoAngle = this.servoMax; // 0 ~ servoMax
+      }
 
-        if(counter >= this.lifespans[rippleIndex]){
-          this.removeList(modules[i].id);
-        } else {
-          var theta = radians(this.clocks[rippleIndex] % 360);
-          modules[i].servoAngle = (1 +sin(theta - PI))*this.servoMax/2; // 0 ~ servoMax
+    }
+  },
+
+  //=========== setRippleIDs() ===========
+  setRippleIDs : function(_baseID, _lastStepIDs, _pastStepIDs) {
+    var temp_rippleIDs = [];
+    //add the modules around the modules that were turned on at last step
+    for (var i = 0; i < _lastStepIDs.length; i++){
+      for (var j = 0; j < modules.length; j++){
+        if(_lastStepIDs[i] == modules[j].id){
+          for(var k = 0; k < modules[j].neighbor_ids.length; k++){
+            if (modules[j].neighbor_ids[k] != 0){
+              temp_rippleIDs.push(modules[j].neighbor_ids[k]);
+            }
+          }
+        }
+      }
+    }
+
+    //remove the modules that have been turned on in the past from the array
+    for (var i = 0; i < _pastStepIDs.length; i++){
+      for (var j = temp_rippleIDs.length-1; j >= 0; j--){
+        if (_pastStepIDs[i] == temp_rippleIDs[j]){
+          temp_rippleIDs.splice(j,1);
+        }
+      }
+    }
+
+    console.log(temp_rippleIDs);
+    this.rippleIDs = temp_rippleIDs;
+
+    this.clocks.push(0.0);
+    this.clockSpeeds.push(0.1);
+
+
+    for (var i = 0; i < this.rippleIDs.length; i++){
+      for (var j = 0; j < modules.length; j++) {
+        if (modules[j].id == _id) {
+          modules[j].rippleOn = true;
         }
       }
     }

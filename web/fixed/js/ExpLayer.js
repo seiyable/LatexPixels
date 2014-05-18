@@ -3,12 +3,12 @@ function ExpLayer() {
   this.drawRise = true;
   this.drawFall = false;
   this.drawPulse = false;
-  this.drawPulse = false;
+  //this.drawRipple = false;
 
   this.rs = new Rise();
   this.fl = new Fall();
   this.pl = new Pulse();
-  this.rp = new Ripple();
+  //this.rp = new Ripple();
 }
 
 ExpLayer.prototype = {
@@ -17,7 +17,7 @@ ExpLayer.prototype = {
       this.pl.pulseIt();
       this.rs.riseIt();
       this.fl.fallIt();
-      this.rp.rippleIt();
+     // this.rp.rippleIt();
   },
 
   //=========== expressHandler() ===========
@@ -59,9 +59,9 @@ ExpLayer.prototype = {
     */
 
     //-------- start ripple --------
-    if (this.drawRipple) {
-      this.rp.addList(_id);
-    }
+    //if (this.drawRipple) {
+    //  this.rp.addList(_id);
+    //}
 
     /*
     //-------- stop ripple --------
@@ -78,25 +78,25 @@ ExpLayer.prototype = {
       this.drawRise = true;
       this.drawFall = false;
       this.drawPulse = false;
-      this.drawRipple = false;
+      //this.drawRipple = false;
       console.log("Rise On");
     } else if (_value == "Fall") {
       this.drawRise = false;
       this.drawFall = true;
       this.drawPulse = false;
-      this.drawRipple = false;
+      //this.drawRipple = false;
       console.log("Fail On");
     } else if (_value == "Pulse") {
       this.drawRise = false;
       this.drawFall = false;
       this.drawPulse = true;
-      this.drawRipple = false;
+      //this.drawRipple = false;
       console.log("Pulse On");
     } else if (_value == "Ripple") {
       this.drawRise = false;
       this.drawFall = false;
       this.drawPulse = false;
-      this.drawRipple = true;
+      //this.drawRipple = true;
       console.log("Ripple On");
     }
   },
@@ -106,6 +106,6 @@ ExpLayer.prototype = {
     this.pl.updateClock();
     this.rs.updateClock();
     this.fl.updateClock();
-    this.rp.updateClock();
+    //this.rp.updateClock();
   }
 }
