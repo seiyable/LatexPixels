@@ -4,11 +4,12 @@ function Ripple() {
   this.rippleChildren = []; //array in array
   this.stepCounts = [];
   this.nextStepTiming = [];
-  this.childrensLifespans = [];
-  this.baseModuleIDs = []; //array in array
+  this.childrenLifespans = [];
+  this.baseIDs = [];
+  this.lastStepIDs = []; //array in array
+  this.pastStepIDs = []; //array in array
   this.clocks = [];
   this.clockSpeeds = [];
-  this.lifespans =[];
 }
 
 Ripple.prototype = {
@@ -22,17 +23,22 @@ Ripple.prototype = {
 
   },
 
-  //=========== generateRippleChildren() ===========  
-  generateRippleChildren : function(_index) {
-    this.rippleChildren[_index].push(new RippleChild(this.stepCounts[_index], this.childrensLifespans[_index]));
-  },
-
   //=========== addList() ===========
   addList : function(_id) {
-    this.rippleIDs.push(_id);
+    this.rippleChildren.push(new Array());
     this.clocks.push(0.0);
     this.clockSpeeds.push(0.1);
-    this.lifespans.push(18);
+    this.stepCounts.push(0);
+    this.nextStepTiming.push(5);
+    this.childrenLifespans.push(5);
+    this.baseIDs.push(_id);
+    this.lastStepIDs.push(new Array());
+    this.pastStepIDs.push(new Array());
+
+    //add new a ripple child
+    this.rippleChildren[this.rippleChildren.length - 1].push(new RippleChild(_id, this.lastStepIDs[this.rippleChildren.length - 1], this.pastStepIDs[this.rippleChildren.length - 1]));
+    this.lastStepIDs[this.rippleChildren.length - 1].push(_id);
+    this.pastStepIDs[this.rippleChildren.length - 1].push(_id);
 
     for (var i = 0; i < modules.length; i++) {
       if (modules[i].id == _id) {
@@ -65,6 +71,11 @@ Ripple.prototype = {
   updateClock : function() {
     for (var i = 0; i < this.clocks.length; i++){
       this.clocks[i] += this.clockSpeeds[i];
+      if (this.clocks[i] > this.nextStepTiming[i]){
+        this.clock[i] = 0;
+        //generate a next ripple children
+        this.rippleChildren[i].push(new RippleChild(this.baseIDs[i], this.lastStepIDs[i], this.pastStepIDs[i]));
+      }
     }
   }
 }

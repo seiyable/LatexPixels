@@ -9,8 +9,8 @@ function RippleChild() {
 
 RippleChild.prototype = {
 
-  //=========== rippleIt() ===========  
-  rippleIt : function() {
+  //=========== rippleChildIt() ===========  
+  rippleChildIt : function() {
 
     for (var i = 0; i < modules.length; i++) {
       if (this.rippleIDs.indexOf(modules[i].id) >= 0) {
